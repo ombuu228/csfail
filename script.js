@@ -1,8 +1,8 @@
 const inputValues = Array(10).fill('');
 const colorProbabilities = [
-    { color: 'red', probability: 47.5 },
-    { color: 'black', probability: 47.5 },
-    { color: 'green', probability: 5 }
+    { color: 'red', probability: 46.6 },
+    { color: 'black', probability: 46.6 },
+    { color: 'green', probability: 6.8 }
 ];
 const history = [];
 const inputIds = ['input1', 'input2', 'input3', 'input4', 'input5', 'input6', 'input7', 'input8', 'input9', 'input10'];
@@ -28,37 +28,25 @@ function updateProbabilities() {
 function calculateColor() {
     updateProbabilities();
 
-    const recentHistory = history.slice(0, 3);
+    const totalProbability = colorProbabilities.reduce((sum, color) => sum + color.probability, 0);
+    const randomValue = Math.random() * totalProbability;
 
-    let predictedColor = '';
-    if (recentHistory.every(color => color === 'red')) {
+    let cumulativeProbability = 0;
+    let selectedColor = '';
 
-        predictedColor = 'black';
-    } else if (recentHistory.every(color => color === 'black')) {
+    for (const color of colorProbabilities) {
+        cumulativeProbability += color.probability;
 
-        predictedColor = 'red';
-    } else {
-
-        const totalProbability = colorProbabilities.reduce((sum, color) => sum + color.probability, 0);
-        const randomValue = Math.random() * totalProbability;
-
-        let cumulativeProbability = 0;
-
-        for (const color of colorProbabilities) {
-            cumulativeProbability += color.probability;
-
-            if (randomValue <= cumulativeProbability) {
-                predictedColor = color.color;
-                break;
-            }
+        if (randomValue <= cumulativeProbability) {
+            selectedColor = color.color;
+            break;
         }
     }
 
-    history.push(predictedColor);
-    displayColor(predictedColor);
+    history.push(selectedColor);
+    displayColor(selectedColor);
     displayHistory();
 }
-
 
 function displayColor(color) {
     const outputElement = document.getElementById('output');
@@ -88,4 +76,3 @@ function displayHistory() {
         }
     }
 }
-
